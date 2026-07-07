@@ -1,0 +1,27 @@
+[project]
+name = "loan-intake-agent"
+version = "0.1.0"
+description = "An agentic AI that extracts a synthetic mortgage Form 1003, checks underwriting guardrails, and answers grounded questions over lending guidelines — with an eval harness and traces."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Greg Groff" }]
+license = { text = "MIT" }
+dependencies = []
+
+[project.scripts]
+loan-intake-agent = "loan_intake_agent.__main__:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/loan_intake_agent"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
