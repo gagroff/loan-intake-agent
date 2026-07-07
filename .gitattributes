@@ -1,0 +1,11 @@
+# Normalize line endings: store LF in the repo, check out native on each OS.
+* text=auto eol=lf
+
+# Keep Windows-native scripts CRLF if any are added later.
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+
+# Treat lockfiles/binaries sensibly.
+uv.lock text eol=lf
+*.png binary
+*.gif binary
