@@ -26,11 +26,11 @@ When the LLM misbehaves, you want a trustworthy oracle to measure it against.
 ## Phase 0 — Environment & scaffold  (~½ week)
 Get the repo and Azure ready so no later phase stalls on setup.
 
-- [ ] **P0.1 — Provision Azure Foundry.** *Done when:* a personal Azure account exists with a deployed chat model + an embedding model, and their names/keys are captured in a local (git-ignored) `.env`.
+- [x] **P0.1 — Provision Azure Foundry.** *Done when:* a personal Azure account exists with a deployed chat model + an embedding model, and their names/keys are captured in a local (git-ignored) `.env`. — Done 2026-07-07: `loan-intake` Foundry project, `gpt-5-mini` + `text-embedding-3-small` deployed, endpoint in `.env` (auth via `az login`, no key needed).
 - [x] **P0.2 — Pin the agent library.** *Done when:* the exact Python agent approach is chosen (Foundry Agent Service vs. a lightweight agent SDK) and a 10-line "hello, tool call" spike runs against Foundry. — Done 2026-07-07: `agent-framework` + `FoundryChatClient` (from `agent_framework_foundry`, not `agent_framework.azure`), auth via `AzureCliCredential`/`az login` (no API key). Spike at `scripts/foundry_spike.py`.
-- [ ] **P0.3 — Create the repo (private).** *Done when:* `loan-intake-agent` exists on Greg's **personal** GitHub, private, with git configured to his **personal** email/identity for this repo.
-- [ ] **P0.4 — Project skeleton.** *Done when:* Python project scaffolds (venv/uv or poetry), `.gitignore` covers `.env` + secrets, README stub + LICENSE present, `pytest` runs green on a trivial test.
-- **Exit:** `python -m loan_intake_agent --help` runs; a trivial LLM call to Foundry succeeds.
+- [x] **P0.3 — Create the repo (private).** *Done when:* `loan-intake-agent` exists on Greg's **personal** GitHub, private, with git configured to his **personal** email/identity for this repo. — Done 2026-07-07: github.com/gagroff/loan-intake-agent, private, commits under Greg Groff / gagroff@hotmail.com.
+- [x] **P0.4 — Project skeleton.** *Done when:* Python project scaffolds (venv/uv or poetry), `.gitignore` covers `.env` + secrets, README stub + LICENSE present, `pytest` runs green on a trivial test. — Done 2026-07-07: uv-managed venv, `.gitignore` covers `.env`/secrets, README + MIT LICENSE present, `pytest` passes (3 tests).
+- **Exit:** ✅ `python -m loan_intake_agent --help` runs; a trivial LLM call to Foundry succeeds (`scripts/foundry_spike.py`).
 
 ## Phase 1 — M1: Extraction + guardrails (deterministic core)  (~1–1.5 weeks)
 The engine, no LLM reasoning yet — pure, testable logic.
