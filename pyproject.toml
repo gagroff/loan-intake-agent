@@ -6,7 +6,10 @@ readme = "README.md"
 requires-python = ">=3.12"
 authors = [{ name = "Greg Groff" }]
 license = { text = "MIT" }
-dependencies = []
+dependencies = [
+    "agent-framework>=1.10.0",
+    "python-dotenv>=1.2.2",
+]
 
 [project.scripts]
 loan-intake-agent = "loan_intake_agent.__main__:main"

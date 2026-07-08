@@ -73,13 +73,14 @@ You should now have **two deployments** listed under **Models + endpoints** (or 
 
 ---
 
-## Step 5 — Grab the endpoint and key
+## Step 5 — Grab the endpoint
 
 1. Go to the project's **Home** / **Overview** page.
-2. Find and copy:
-   - **Project endpoint** — a URL like
-     `https://<resource>.services.ai.azure.com/api/projects/<project>`
-   - **API key** — a long secret string. **Treat it like a password.**
+2. Find and copy the **Project endpoint** — a URL like
+   `https://<resource>.services.ai.azure.com/api/projects/<project>`
+
+You do **not** need the API key. `agent-framework`'s `FoundryChatClient` authenticates with an Azure
+credential (`AzureCliCredential`), not a raw key — see Step 7.
 
 ---
 
@@ -95,27 +96,25 @@ Open `.env` and paste your values:
 
 ```
 FOUNDRY_PROJECT_ENDPOINT=https://<resource>.services.ai.azure.com/api/projects/<project>
-FOUNDRY_API_KEY=<your key>
 FOUNDRY_CHAT_DEPLOYMENT=gpt-5-mini              # the exact name from Step 3
 FOUNDRY_EMBEDDING_DEPLOYMENT=text-embedding-3-small   # the exact name from Step 4
 ```
 
-`.env` is git-ignored (verified in `.gitignore`) — your key will **not** be committed. Never paste the key
-into code, chat, or a commit.
+`.env` is git-ignored (verified in `.gitignore`).
 
 ---
 
-## Step 7 — Verify with the Azure CLI (optional but reassuring)
+## Step 7 — Verify with the Azure CLI (required for auth)
 
-You already have the Azure CLI installed. From a terminal:
+From a terminal:
 
 ```bash
 az login                 # opens a browser; sign in with the SAME personal account
 az account show          # confirms which subscription you're on
 ```
 
-This confirms your account and subscription are wired up. (The Python "hello, tool call" spike in task
-**P0.2** is what finally proves the models respond — we'll write that together once your `.env` is filled.)
+This isn't just a sanity check — `scripts/foundry_spike.py` (P0.2) uses `AzureCliCredential`, which reads
+this login to authenticate. Stay logged in via `az login` for local dev.
 
 ---
 
