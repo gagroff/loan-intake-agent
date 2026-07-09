@@ -34,3 +34,17 @@ class Fields(BaseModel):
     employment: Employment | None = None
     debts: Debts | None = None
     loan: LoanProperty | None = None
+
+
+class Ratios(BaseModel):
+    ltv: float | None = None
+    dti: float | None = None
+
+
+class Flag(BaseModel):
+    code: str
+    reason: str
+
+
+class Flags(BaseModel):
+    items: list[Flag] = []

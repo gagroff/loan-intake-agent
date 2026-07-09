@@ -7,7 +7,7 @@
     "monthly_payments": 500.0
   },
   "loan": {
-    "loan_amount": 180000.0,
+    "loan_amount": 154000.0,
     "property_value": 220000.0,
     "property_address": "77 Cedar Ln, Portland, OR"
   }
