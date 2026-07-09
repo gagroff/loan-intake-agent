@@ -1,0 +1,19 @@
+{
+  "borrower": {
+    "first_name": "Priya",
+    "last_name": "Nair"
+  },
+  "employment": {
+    "employer_name": "Sunview Retail",
+    "years_employed": 2.0,
+    "monthly_income": 4000.0
+  },
+  "debts": {
+    "monthly_payments": 2000.0
+  },
+  "loan": {
+    "loan_amount": 240000.0,
+    "property_value": 320000.0,
+    "property_address": "9 Maple Ct, Austin, TX"
+  }
+}

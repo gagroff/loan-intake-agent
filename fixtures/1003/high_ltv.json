@@ -1,0 +1,19 @@
+{
+  "borrower": {
+    "first_name": "Marcus",
+    "last_name": "Reyes"
+  },
+  "employment": {
+    "employer_name": "Riverbend Logistics",
+    "years_employed": 5.0,
+    "monthly_income": 7000.0
+  },
+  "debts": {
+    "monthly_payments": 900.0
+  },
+  "loan": {
+    "loan_amount": 285000.0,
+    "property_value": 300000.0,
+    "property_address": "45 Birchwood Ave, Denver, CO"
+  }
+}

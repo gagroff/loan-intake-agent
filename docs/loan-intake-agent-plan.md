@@ -35,9 +35,9 @@ Get the repo and Azure ready so no later phase stalls on setup.
 ## Phase 1 — M1: Extraction + guardrails (deterministic core)  (~1–1.5 weeks)
 The engine, no LLM reasoning yet — pure, testable logic.
 
-- [ ] **P1.1 — Typed schema.** Define `Fields` (borrower, income, debts, loan amount, property value, employment section, etc.). *Done when:* the schema is a typed model (dataclass/pydantic) with sensible optionals.
-- [ ] **P1.2 — Synthetic 1003 fixtures.** Create 3–5 text/JSON sample apps: 1 clean, + high-LTV, high-DTI, missing-section cases. *Done when:* all fixtures load into `Fields`.
-- [ ] **P1.3 — `extract_1003`.** Map a document to `Fields`. *Done when:* runs over every fixture without crashing; missing fields are represented, not fatal.
+- [x] **P1.1 — Typed schema.** Define `Fields` (borrower, income, debts, loan amount, property value, employment section, etc.). *Done when:* the schema is a typed model (dataclass/pydantic) with sensible optionals. — Done 2026-07-09: `src/loan_intake_agent/schema.py`, pydantic `BaseModel`s (`Borrower`, `Employment`, `Debts`, `LoanProperty`, `Fields`), every field/section optional so a missing section is `None` not a crash. Tests in `tests/test_fields.py`.
+- [x] **P1.2 — Synthetic 1003 fixtures.** Create 3–5 text/JSON sample apps: 1 clean, + high-LTV, high-DTI, missing-section cases. *Done when:* all fixtures load into `Fields`. — Done 2026-07-09: 4 JSON fixtures in `fixtures/1003/` (`clean`, `high_ltv` ~95% LTV, `high_dti` 50% DTI, `missing_employment` — no employment section). Loader tests in `tests/test_fixtures.py` validate each via `Fields.model_validate`.
+- [x] **P1.3 — `extract_1003`.** Map a document to `Fields`. *Done when:* runs over every fixture without crashing; missing fields are represented, not fatal. — Done 2026-07-09: `src/loan_intake_agent/extract.py`. Parses JSON text section-by-section; unparseable documents, non-dict payloads, missing sections, and malformed sections all degrade to `None` instead of raising (document text is untrusted input). Tests in `tests/test_extract.py`.
 - [ ] **P1.4 — `calc_ratios`.** Compute LTV and DTI. *Done when:* outputs match hand-computed values in a unit test.
 - [ ] **P1.5 — `check_guardrails`.** Flag high LTV, high DTI, and missing required sections, each with a human-readable reason. *Done when:* flags the right docs and only those; covered by unit tests.
 - **Exit / M1 done:** `run` over all sample docs prints the correct flags. Committed with tests.

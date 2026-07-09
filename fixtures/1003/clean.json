@@ -1,0 +1,19 @@
+{
+  "borrower": {
+    "first_name": "Jane",
+    "last_name": "Doe"
+  },
+  "employment": {
+    "employer_name": "Acme Corp",
+    "years_employed": 3.5,
+    "monthly_income": 6000.0
+  },
+  "debts": {
+    "monthly_payments": 800.0
+  },
+  "loan": {
+    "loan_amount": 240000.0,
+    "property_value": 300000.0,
+    "property_address": "123 Main St, Springfield, IL"
+  }
+}

@@ -9,6 +9,7 @@ license = { text = "MIT" }
 dependencies = [
     "agent-framework>=1.10.0",
     "python-dotenv>=1.2.2",
+    "pydantic>=2.0",
 ]
 
 [project.scripts]
