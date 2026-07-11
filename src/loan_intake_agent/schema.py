@@ -54,3 +54,14 @@ class Chunk(BaseModel):
     id: str
     section: str | None = None
     text: str
+
+
+class Passage(BaseModel):
+    id: str
+    section: str | None = None
+    text: str
+    score: float
+
+
+class Passages(BaseModel):
+    items: list[Passage] = []

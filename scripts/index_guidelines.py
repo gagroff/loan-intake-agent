@@ -1,39 +1,29 @@
-"""P2.2 spike: embed the guideline corpus and prove a similarity query returns the right passage.
+"""P2.3 spike: search_guidelines returns grounded passages for a real query.
 
 Run: uv run python scripts/index_guidelines.py
 """
 
 import asyncio
-from pathlib import Path
 
 from dotenv import load_dotenv
 
-from loan_intake_agent.chunking import chunk_guidelines
-from loan_intake_agent.embeddings import build_embedding_client, embed_texts
-from loan_intake_agent.vector_store import VectorStore
-
-GUIDELINES_PATH = Path(__file__).parent.parent / "fixtures" / "guidelines" / "underwriting_guidelines.md"
+from loan_intake_agent.search import GuidelineIndex, search_guidelines
 
 
 async def main() -> None:
     load_dotenv()
 
-    chunks = chunk_guidelines(GUIDELINES_PATH.read_text(encoding="utf-8"))
-    print(f"Chunked corpus into {len(chunks)} rules.")
+    index = await GuidelineIndex.build()
 
-    client = build_embedding_client()
-    vectors = await embed_texts(client, [c.text for c in chunks])
-
-    store = VectorStore()
-    store.add(chunks, vectors)
-
-    query = "What's the maximum loan-to-value ratio allowed?"
-    query_vector = (await embed_texts(client, [query]))[0]
-    results = store.query(query_vector, top_k=2)
-
-    print(f"\nQuery: {query!r}")
-    for r in results:
-        print(f"  [{r.score:.3f}] Rule {r.chunk.id}: {r.chunk.text[:80]}...")
+    for query in [
+        "What's the maximum loan-to-value ratio allowed?",
+        "What happens if my debt-to-income ratio is too high?",
+        "What is the minimum credit score required?",
+    ]:
+        passages = await search_guidelines(query, index)
+        print(f"\nQuery: {query!r}")
+        for p in passages.items[:2]:
+            print(f"  [{p.score:.3f}] Rule {p.id}: {p.text[:90]}...")
 
 
 if __name__ == "__main__":
