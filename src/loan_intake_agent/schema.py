@@ -48,3 +48,9 @@ class Flag(BaseModel):
 
 class Flags(BaseModel):
     items: list[Flag] = []
+
+
+class Chunk(BaseModel):
+    id: str
+    section: str | None = None
+    text: str
