@@ -12,6 +12,8 @@ something the LLM can supply — `build_search_guidelines_tool` closes over an
 already-built index so the tool the agent sees only takes `query`.
 """
 
+import functools
+import inspect
 from collections.abc import Awaitable, Callable
 
 from .extract import extract_1003
@@ -19,6 +21,7 @@ from .guardrails import check_guardrails
 from .ratios import calc_ratios
 from .schema import Fields, Ratios
 from .search import GuidelineIndex
+from .trace import RunTrace
 
 INSTRUCTIONS = (
     "You are a loan intake assistant. Use extract_1003_tool to read a raw application "
@@ -72,12 +75,46 @@ def build_search_guidelines_tool(index: GuidelineIndex) -> Callable[[str], Await
     return search_guidelines_tool
 
 
-def build_agent(client, index: GuidelineIndex):
-    """Register all four tools on a chat client and return the resulting agent."""
+def _bind_args(fn: Callable, args: tuple, kwargs: dict) -> dict:
+    bound = inspect.signature(fn).bind(*args, **kwargs)
+    bound.apply_defaults()
+    return dict(bound.arguments)
+
+
+def _traced(tool: Callable, trace: RunTrace) -> Callable:
+    """Wrap a tool so each call is recorded on `trace`, preserving name/docstring/signature."""
+    if inspect.iscoroutinefunction(tool):
+
+        @functools.wraps(tool)
+        async def async_wrapper(*args, **kwargs):
+            result = await tool(*args, **kwargs)
+            trace.record(tool.__name__, _bind_args(tool, args, kwargs), result)
+            return result
+
+        return async_wrapper
+
+    @functools.wraps(tool)
+    def sync_wrapper(*args, **kwargs):
+        result = tool(*args, **kwargs)
+        trace.record(tool.__name__, _bind_args(tool, args, kwargs), result)
+        return result
+
+    return sync_wrapper
+
+
+def build_agent(client, index: GuidelineIndex, trace: RunTrace | None = None):
+    """Register all four tools on a chat client and return the resulting agent.
+
+    If `trace` is given, every tool call is wrapped so its name, args, and
+    result are recorded on it (see `trace.py`) — the caller is expected to
+    also copy `AgentResponse.usage_details` into `trace` after `agent.run`.
+    """
     tools = [
         extract_1003_tool,
         calc_ratios_tool,
         check_guardrails_tool,
         build_search_guidelines_tool(index),
     ]
+    if trace is not None:
+        tools = [_traced(tool, trace) for tool in tools]
     return client.as_agent(instructions=INSTRUCTIONS, tools=tools)
