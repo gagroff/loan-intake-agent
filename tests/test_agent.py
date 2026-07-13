@@ -21,6 +21,7 @@ from loan_intake_agent.agent import (
 )
 from loan_intake_agent.schema import Fields, Ratios
 from loan_intake_agent.search import GuidelineIndex
+from loan_intake_agent.trace import RunTrace
 
 CLEAN_DOCUMENT = json.dumps(
     {
@@ -114,3 +115,58 @@ async def test_build_agent_registers_all_four_tools():
 
     tool_names = {getattr(t, "__name__", None) for t in agent.tools}
     assert tool_names == {"extract_1003_tool", "calc_ratios_tool", "check_guardrails_tool", "search_guidelines_tool"}
+
+
+@pytest.mark.anyio
+async def test_build_agent_preserves_tool_names_and_docstrings_without_a_trace():
+    index = await GuidelineIndex.build(text=GUIDELINES_TEXT, embed_fn=_fake_embed_fn)
+    client = _FakeChatClient()
+
+    agent = build_agent(client, index)
+
+    by_name = {t.__name__: t for t in agent.tools}
+    assert by_name["calc_ratios_tool"].__doc__ == calc_ratios_tool.__doc__
+
+
+@pytest.mark.anyio
+async def test_build_agent_with_trace_records_a_sync_tool_call():
+    index = await GuidelineIndex.build(text=GUIDELINES_TEXT, embed_fn=_fake_embed_fn)
+    client = _FakeChatClient()
+    trace = RunTrace()
+
+    agent = build_agent(client, index, trace=trace)
+
+    by_name = {t.__name__: t for t in agent.tools}
+    fields_json = by_name["extract_1003_tool"](CLEAN_DOCUMENT)
+    ratios_json = by_name["calc_ratios_tool"](fields_json)
+
+    assert [step.tool for step in trace.steps] == ["extract_1003_tool", "calc_ratios_tool"]
+    assert trace.steps[1].args == {"fields_json": fields_json}
+    assert trace.steps[1].result == ratios_json
+
+
+@pytest.mark.anyio
+async def test_build_agent_with_trace_records_an_async_tool_call():
+    index = await GuidelineIndex.build(text=GUIDELINES_TEXT, embed_fn=_fake_embed_fn)
+    client = _FakeChatClient()
+    trace = RunTrace()
+
+    agent = build_agent(client, index, trace=trace)
+
+    by_name = {t.__name__: t for t in agent.tools}
+    passages_json = await by_name["search_guidelines_tool"]("what's the max LTV?")
+
+    assert [step.tool for step in trace.steps] == ["search_guidelines_tool"]
+    assert trace.steps[0].args == {"query": "what's the max LTV?"}
+    assert trace.steps[0].result == passages_json
+
+
+@pytest.mark.anyio
+async def test_build_agent_without_trace_does_not_record_anything():
+    index = await GuidelineIndex.build(text=GUIDELINES_TEXT, embed_fn=_fake_embed_fn)
+    client = _FakeChatClient()
+
+    agent = build_agent(client, index)
+
+    by_name = {t.__name__: t for t in agent.tools}
+    by_name["extract_1003_tool"](CLEAN_DOCUMENT)  # should not raise without a trace
