@@ -43,6 +43,7 @@ def test_flags_high_ltv_only():
     assert len(flags.items) == 1
     assert flags.items[0].code == "high_ltv"
     assert "ltv" in flags.items[0].reason.lower()
+    assert flags.items[0].guideline_ref == "1.1"
 
 
 def test_flags_high_dti_only():
@@ -57,6 +58,7 @@ def test_flags_high_dti_only():
     assert len(flags.items) == 1
     assert flags.items[0].code == "high_dti"
     assert "dti" in flags.items[0].reason.lower()
+    assert flags.items[0].guideline_ref == "2.1"
 
 
 def test_flags_missing_required_section_only():
@@ -68,6 +70,7 @@ def test_flags_missing_required_section_only():
     assert len(flags.items) == 1
     assert flags.items[0].code == "missing_section"
     assert "employment" in flags.items[0].reason.lower()
+    assert flags.items[0].guideline_ref == "3.1"
 
 
 def test_flags_one_entry_per_missing_section():

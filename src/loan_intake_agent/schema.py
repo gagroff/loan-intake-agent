@@ -44,6 +44,7 @@ class Ratios(BaseModel):
 class Flag(BaseModel):
     code: str
     reason: str
+    guideline_ref: str | None = None
 
 
 class Flags(BaseModel):

@@ -22,6 +22,7 @@ def check_guardrails(fields: Fields, ratios: Ratios) -> Flags:
             Flag(
                 code="high_ltv",
                 reason=f"LTV of {ratios.ltv:.0%} exceeds the {LTV_THRESHOLD:.0%} threshold.",
+                guideline_ref="1.1",
             )
         )
 
@@ -30,6 +31,7 @@ def check_guardrails(fields: Fields, ratios: Ratios) -> Flags:
             Flag(
                 code="high_dti",
                 reason=f"DTI of {ratios.dti:.0%} exceeds the {DTI_THRESHOLD:.0%} threshold.",
+                guideline_ref="2.1",
             )
         )
 
@@ -39,6 +41,7 @@ def check_guardrails(fields: Fields, ratios: Ratios) -> Flags:
                 Flag(
                     code="missing_section",
                     reason=f"Required section '{section}' is missing from the application.",
+                    guideline_ref="3.1",
                 )
             )
 
