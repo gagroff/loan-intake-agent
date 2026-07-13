@@ -66,3 +66,30 @@ class Passage(BaseModel):
 
 class Passages(BaseModel):
     items: list[Passage] = []
+
+
+class GuardrailEvalCase(BaseModel):
+    name: str
+    document_fixture: str
+    expected_flag_codes: list[str]
+
+
+class RagEvalCase(BaseModel):
+    name: str
+    query: str
+    expected_rule_id: str | None = None
+
+
+class GuardrailEvalResult(BaseModel):
+    name: str
+    passed: bool
+    expected_flag_codes: list[str]
+    actual_flag_codes: list[str]
+
+
+class RagEvalResult(BaseModel):
+    name: str
+    passed: bool
+    expected_rule_id: str | None
+    actual_rule_id: str | None
+    score: float | None

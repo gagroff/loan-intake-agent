@@ -16,3 +16,9 @@ def test_help_runs_and_exits_zero():
 def test_parser_builds():
     parser = build_parser()
     assert parser.prog == "loan-intake-agent"
+
+
+def test_run_evals_subcommand_is_registered():
+    parser = build_parser()
+    args = parser.parse_args(["run-evals"])
+    assert args.func is not None

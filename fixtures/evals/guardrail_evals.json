@@ -1,0 +1,22 @@
+[
+  {
+    "name": "clean_application_has_no_flags",
+    "document_fixture": "1003/clean.json",
+    "expected_flag_codes": []
+  },
+  {
+    "name": "high_ltv_application_flags_high_ltv",
+    "document_fixture": "1003/high_ltv.json",
+    "expected_flag_codes": ["high_ltv"]
+  },
+  {
+    "name": "high_dti_application_flags_high_dti",
+    "document_fixture": "1003/high_dti.json",
+    "expected_flag_codes": ["high_dti"]
+  },
+  {
+    "name": "missing_employment_flags_missing_section",
+    "document_fixture": "1003/missing_employment.json",
+    "expected_flag_codes": ["missing_section"]
+  }
+]

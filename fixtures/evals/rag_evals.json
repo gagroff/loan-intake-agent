@@ -1,0 +1,22 @@
+[
+  {
+    "name": "max_ltv_question_cites_rule_1_1",
+    "query": "What's the maximum loan-to-value ratio allowed?",
+    "expected_rule_id": "1.1"
+  },
+  {
+    "name": "max_dti_question_cites_rule_2_1",
+    "query": "What happens if my debt-to-income ratio is too high?",
+    "expected_rule_id": "2.1"
+  },
+  {
+    "name": "required_sections_question_cites_rule_3_1",
+    "query": "What sections are required for a complete application?",
+    "expected_rule_id": "3.1"
+  },
+  {
+    "name": "credit_score_question_is_out_of_corpus",
+    "query": "What is the minimum credit score required for approval?",
+    "expected_rule_id": null
+  }
+]

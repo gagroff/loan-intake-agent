@@ -1,16 +1,23 @@
 """CLI entry point for the loan intake agent.
 
-Phase 0 stub: proves `python -m loan_intake_agent --help` runs. Real
-subcommands (`run`, `chat`, `run-evals`) land in later phases.
+Subcommands are added as milestones land (`run` / `chat` still pending;
+`run-evals` landed in P3.2).
 """
 
 from __future__ import annotations
 
 import argparse
+import asyncio
 import sys
 from collections.abc import Sequence
 
 from loan_intake_agent import __version__
+
+
+def _run_evals(args: argparse.Namespace) -> int:
+    from loan_intake_agent.run_evals import main as run_evals_main
+
+    return asyncio.run(run_evals_main())
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -26,8 +33,14 @@ def build_parser() -> argparse.ArgumentParser:
         action="version",
         version=f"%(prog)s {__version__}",
     )
-    # Subcommands are added as milestones land (run / chat / run-evals).
     parser.set_defaults(func=None)
+
+    subparsers = parser.add_subparsers(dest="command")
+    run_evals_parser = subparsers.add_parser(
+        "run-evals", help="Score the eval set (guardrails + RAG) and print a pass/fail summary."
+    )
+    run_evals_parser.set_defaults(func=_run_evals)
+
     return parser
 
 
