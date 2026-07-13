@@ -95,14 +95,15 @@ async def test_search_guidelines_tool_delegates_to_the_bound_index():
 
 
 class _FakeAgent:
-    def __init__(self, instructions, tools):
+    def __init__(self, instructions, tools, middleware=None):
         self.instructions = instructions
         self.tools = tools
+        self.middleware = middleware
 
 
 class _FakeChatClient:
-    def as_agent(self, instructions, tools):
-        return _FakeAgent(instructions, tools)
+    def as_agent(self, instructions, tools, middleware=None):
+        return _FakeAgent(instructions, tools, middleware=middleware)
 
 
 @pytest.mark.anyio
@@ -114,3 +115,14 @@ async def test_build_agent_registers_all_four_tools():
 
     tool_names = {getattr(t, "__name__", None) for t in agent.tools}
     assert tool_names == {"extract_1003_tool", "calc_ratios_tool", "check_guardrails_tool", "search_guidelines_tool"}
+
+
+@pytest.mark.anyio
+async def test_build_agent_forwards_middleware_to_the_client():
+    index = await GuidelineIndex.build(text=GUIDELINES_TEXT, embed_fn=_fake_embed_fn)
+    client = _FakeChatClient()
+    sentinel_middleware = [object()]
+
+    agent = build_agent(client, index, middleware=sentinel_middleware)
+
+    assert agent.middleware is sentinel_middleware

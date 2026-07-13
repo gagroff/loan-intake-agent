@@ -72,7 +72,7 @@ def build_search_guidelines_tool(index: GuidelineIndex) -> Callable[[str], Await
     return search_guidelines_tool
 
 
-def build_agent(client, index: GuidelineIndex):
+def build_agent(client, index: GuidelineIndex, middleware=None):
     """Register all four tools on a chat client and return the resulting agent."""
     tools = [
         extract_1003_tool,
@@ -80,4 +80,4 @@ def build_agent(client, index: GuidelineIndex):
         check_guardrails_tool,
         build_search_guidelines_tool(index),
     ]
-    return client.as_agent(instructions=INSTRUCTIONS, tools=tools)
+    return client.as_agent(instructions=INSTRUCTIONS, tools=tools, middleware=middleware)
