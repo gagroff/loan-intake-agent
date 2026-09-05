@@ -96,14 +96,15 @@ async def test_search_guidelines_tool_delegates_to_the_bound_index():
 
 
 class _FakeAgent:
-    def __init__(self, instructions, tools):
+    def __init__(self, instructions, tools, middleware=None):
         self.instructions = instructions
         self.tools = tools
+        self.middleware = middleware
 
 
 class _FakeChatClient:
-    def as_agent(self, instructions, tools):
-        return _FakeAgent(instructions, tools)
+    def as_agent(self, instructions, tools, middleware=None):
+        return _FakeAgent(instructions, tools, middleware=middleware)
 
 
 @pytest.mark.anyio
@@ -170,3 +171,14 @@ async def test_build_agent_without_trace_does_not_record_anything():
 
     by_name = {t.__name__: t for t in agent.tools}
     by_name["extract_1003_tool"](CLEAN_DOCUMENT)  # should not raise without a trace
+
+
+@pytest.mark.anyio
+async def test_build_agent_forwards_middleware_to_the_client():
+    index = await GuidelineIndex.build(text=GUIDELINES_TEXT, embed_fn=_fake_embed_fn)
+    client = _FakeChatClient()
+    sentinel_middleware = [object()]
+
+    agent = build_agent(client, index, middleware=sentinel_middleware)
+
+    assert agent.middleware is sentinel_middleware

@@ -102,7 +102,7 @@ def _traced(tool: Callable, trace: RunTrace) -> Callable:
     return sync_wrapper
 
 
-def build_agent(client, index: GuidelineIndex, trace: RunTrace | None = None):
+def build_agent(client, index: GuidelineIndex, trace: RunTrace | None = None, middleware=None):
     """Register all four tools on a chat client and return the resulting agent.
 
     If `trace` is given, every tool call is wrapped so its name, args, and
@@ -117,4 +117,4 @@ def build_agent(client, index: GuidelineIndex, trace: RunTrace | None = None):
     ]
     if trace is not None:
         tools = [_traced(tool, trace) for tool in tools]
-    return client.as_agent(instructions=INSTRUCTIONS, tools=tools)
+    return client.as_agent(instructions=INSTRUCTIONS, tools=tools, middleware=middleware)
