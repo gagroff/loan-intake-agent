@@ -1694,6 +1694,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "anyio" },
     { name = "pytest" },
 ]
 
@@ -1707,7 +1708,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8.0" }]
+dev = [
+    { name = "anyio", specifier = ">=4.0" },
+    { name = "pytest", specifier = ">=8.0" },
+]
 
 [[package]]
 name = "markupsafe"

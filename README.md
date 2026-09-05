@@ -1,5 +1,7 @@
 # Loan Intake Agent
 
+[![CI](https://github.com/gagroff/loan-intake-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/gagroff/loan-intake-agent/actions/workflows/ci.yml)
+
 > An agentic AI that reads a synthetic mortgage **Form 1003**, extracts it into a typed schema,
 > checks underwriting **guardrails** (LTV, DTI, completeness), and answers grounded questions over a
 > small lending-guidelines corpus — with an **eval harness** and **traces** so its quality is *measured*,
@@ -10,9 +12,6 @@
 
 This is a **proof of capability, not a production system**. All data is synthetic — zero PII, zero real
 lending policy.
-
-<!-- TODO: record a ~30s terminal gif of `PYTHONIOENCODING=utf-8 uv run python scripts/agent_spike.py`
-     and drop it here before flipping the repo public (P4.3). -->
 
 ## The 90-second story
 
